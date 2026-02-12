@@ -13,4 +13,4 @@ router.get("/user/:id", getUserById);
 router.put("/user/:id", validateData(userSchema), updateUserById);
 router.delete("/user/:id", deleteUserById);
 
-export default router;
+export default router; 
