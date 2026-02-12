@@ -9,3 +9,88 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum SocialPlatform {
+  INSTAGRAM
+  TIKTOK
+  YOUTUBE
+  FACEBOOK
+  TWITTER
+}
+
+enum SubscriptionType {
+  FREE
+  PREMIUM
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  EXPIRED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  subscription Subscription?
+  tokenBalance TokenBalance?
+  tokenHistory TokenHistory[]
+  downloads    DownloadHistory[]
+  payments     Payment[]
+}
+
+model Subscription {
+  id        String           @id @default(uuid())
+  type      SubscriptionType @default(FREE)
+  expiresAt DateTime?
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model TokenBalance {
+  id        String   @id @default(uuid())
+  balance   Int      @default(15)
+  updatedAt DateTime @updatedAt
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model TokenHistory {
+  id        String   @id @default(uuid())
+  amount    Int
+  type      String 
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model DownloadHistory {
+  id        String         @id @default(uuid())
+  platform  SocialPlatform
+  url       String
+  fileType  String
+  createdAt DateTime       @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Payment {
+  id          String        @id @default(uuid())
+  provider    String
+  amount      Int
+  status      PaymentStatus @default(PENDING)
+  referenceId String? 
+  createdAt   DateTime      @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
