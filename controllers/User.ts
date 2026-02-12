@@ -14,6 +14,22 @@ export const createUser = async (req: Request, res: Response) => {
                 email,
                 username,
                 password : hashedPassword,
+                subscription: {
+                    create: {
+                        type: "FREE",
+                    }
+                },
+                tokenBalance: {
+                    create: {
+                        balance: 20,
+                    }
+                },
+                tokenHistory: {
+                    create:{
+                        amount: 20,
+                        type: "RESET",
+                    }
+                }
             },
         });
         res.status(201).json({
