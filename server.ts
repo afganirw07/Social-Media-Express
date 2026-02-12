@@ -18,5 +18,4 @@ app.use("/api", User);
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}...`);
-    console.log(`Swagger docs available at http://localhost:${port}/api-docs`);
 });
