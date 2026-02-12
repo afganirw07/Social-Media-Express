@@ -1,0 +1,14 @@
+{
+  "name": "social-media-express",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "prisma": "4.16.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@prisma/client": "4.16.2"
+  }
+}
