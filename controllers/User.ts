@@ -1,6 +1,7 @@
 import { prisma } from "../database/prisma";
 import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
+import { jwtCreate } from "../services/jwtCreate";
 
 
 // create a new user
@@ -78,6 +79,11 @@ export const loginUser = async (req: Request, res: Response) => {
                 message: "Invalid email or password",
             });
         }
+        
+        const token = jwtCreate({
+            id: user.id,
+            email: user.email,
+        })
 
         res.status(200).json({
             status: true,
@@ -85,6 +91,7 @@ export const loginUser = async (req: Request, res: Response) => {
             data: {
                 id: user.id,
                 email: user.email,
+                token,
             },
         });
 
@@ -93,6 +100,7 @@ export const loginUser = async (req: Request, res: Response) => {
         res.status(500).json({
             status: false,
             message: "Error logging in user",
+            error: error,
         });
     }
 };
