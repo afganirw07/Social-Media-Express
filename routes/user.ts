@@ -1,10 +1,12 @@
 import { createUser, deleteUserById, getAllUsers, getUserById, updateUserById, loginUser } from "../controllers/User";
 import { Router } from "express";
+import { userRegisterSchema } from "../schemas/user";
+import { validateData } from "../middleware/zod";
 
 const router = Router();
 
 // User routes
-router.post("/user", createUser);
+router.post("/user", validateData(userRegisterSchema), createUser);
 router.post("/login", loginUser);
 router.get("/user", getAllUsers);
 router.get("/user/:id", getUserById);
