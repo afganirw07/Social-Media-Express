@@ -6,6 +6,6 @@ import { InstagramSchema } from "../schemas/instagram";
 
 const router = Router();
 
-router.get("/instagram", validateData(InstagramSchema), JwtVerify, instagramDownloaderVideo);
+router.post("/instagram", validateData(InstagramSchema), JwtVerify, instagramDownloaderVideo);
 
 export default router;
