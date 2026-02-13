@@ -2,6 +2,7 @@ import express from "express";
 import type { Request, Response } from "express";
 import User from "./routes/user.ts";
 import Tiktok from "./routes/tiktok.ts";
+import Youtube from "./routes/youtube.ts";
 
 
 // server setup
@@ -17,6 +18,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 app.use("/api", User);
 app.use("/api", Tiktok);
+app.use("/api", Youtube);
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}...`);
