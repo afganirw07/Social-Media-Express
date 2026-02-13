@@ -2,6 +2,8 @@ import { prisma } from "../database/prisma";
 import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { jwtCreate } from "../services/jwtCreate";
+import generateOTP from "../nodemailer/generateOtp";
+import { sendOTPEmail } from "../services/emailVerify";
 
 
 // create a new user
@@ -9,12 +11,30 @@ export const createUser = async (req: Request, res: Response) => {
     const { email, username, password } = req.body;
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt)
+
+    const otp = generateOTP();
+    const hashedOTP = await bcrypt.hash(otp, 10);
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
     try {
+        const existingUser = await prisma.user.findUnique({
+            where: { email }
+        });
+
+        if (existingUser) {
+            return res.status(400).json({
+                status: false,
+                message: "User already exists",
+            });
+        }
+
         const newUser = await prisma.user.create({
             data: {
                 email,
                 username,
-                password : hashedPassword,
+                password: hashedPassword,
+                otpCode: hashedOTP,
+                otpExpires: expiresAt,
                 subscription: {
                     create: {
                         type: "FREE",
@@ -26,21 +46,19 @@ export const createUser = async (req: Request, res: Response) => {
                     }
                 },
                 tokenHistory: {
-                    create:{
+                    create: {
                         amount: 20,
                         type: "RESET",
                     }
                 }
             },
         });
+        await sendOTPEmail(email, otp);
+
         res.status(201).json({
             status: true,
-            message: "User created successfully",
-            data: {
-                id: newUser.id,
-                email: newUser.email,
-            },
-        })
+            message: "User created. Please verify your email.",
+        });
 
     } catch (error) {
         console.error("Error creating user:", error);
@@ -51,6 +69,50 @@ export const createUser = async (req: Request, res: Response) => {
         });
     }
 };
+
+// verify email
+export const verifyEmail = async (req: Request, res: Response) => {
+    const { email, otp } = req.body;
+
+    try {
+
+        const user = await prisma.user.findUnique({
+            where: { email }
+        });
+
+        if (!user || !user.otpCode || !user.otpExpires) {
+            return res.status(400).json({ message: "Invalid request" });
+        }
+
+        if (user.otpExpires < new Date()) {
+            return res.status(400).json({ message: "OTP expired" });
+        }
+
+        const isValid = await bcrypt.compare(otp, user.otpCode);
+
+        if (!isValid) {
+            return res.status(400).json({ message: "Invalid OTP" });
+        }
+
+        await prisma.user.update({
+            where: { email },
+            data: {
+                isVerified: true,
+                otpCode: null,
+                otpExpires: null,
+            }
+        });
+
+        res.status(200).json({
+            status: true,
+            message: "Email verified successfully"
+        });
+
+    } catch (error) {
+        res.status(500).json({ status: false, message: "Error" });
+    }
+};
+
 
 // login user
 export const loginUser = async (req: Request, res: Response) => {
@@ -79,7 +141,15 @@ export const loginUser = async (req: Request, res: Response) => {
                 message: "Invalid email or password",
             });
         }
-        
+
+        if (!user.isVerified) {
+            return res.status(403).json({
+                status: false,
+                message: "Please verify your email first"
+            });
+        }
+
+
         const token = jwtCreate({
             id: user.id,
             email: user.email,
