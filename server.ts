@@ -1,6 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import User from "./routes/user.ts";
+import Tiktok from "./routes/tiktok.ts";
 
 
 // server setup
@@ -15,6 +16,7 @@ app.get("/", (req: Request, res: Response) => {
     res.json({ message: "Hello World with Bun and Express!" });
 });
 app.use("/api", User);
+app.use("/api", Tiktok);
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}...`);
