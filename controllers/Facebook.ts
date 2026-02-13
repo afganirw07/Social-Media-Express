@@ -1,6 +1,7 @@
 import { prisma } from "../database/prisma";
 import type { Request, Response } from "express";
 import { facebookDownloader } from "../services/facebook";
+
 // facebook download
 export const facebookDownload = async (req: Request, res: Response) => {
     const { url, fileType, userId } = req.body;
