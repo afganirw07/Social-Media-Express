@@ -1,5 +1,13 @@
-import { snapsave } from "snapsave-media-downloader";
+import rahad from "rahad-all-downloader-v2";
 
-const download = await snapsave("https://www.facebook.com/share/r/1CPt7NF9df/");
+export const instagramDownloader = async (url: string) => {
+    try {
+        const result = await rahad.alldl(url);
+        console.log(result);
+    } catch (error) {
+        console.error("Error downloading Facebook video:", error);
+        throw error;
+    }
+};
 
-console.log(download);  
+instagramDownloader("https://www.instagram.com/p/DUsRMZwkyVK/?utm_source=ig_web_copy_link&igsh=NTc4MTIwNjQ2YQ==")

@@ -4,6 +4,7 @@ import User from "./routes/user.ts";
 import Tiktok from "./routes/tiktok.ts";
 import Youtube from "./routes/youtube.ts";
 import Facebook from "./routes/facebook.ts";
+import Instagram from "./routes/instagram.ts";
 
 
 // server setup
@@ -21,6 +22,7 @@ app.use("/api", User);
 app.use("/api", Tiktok);
 app.use("/api", Youtube);
 app.use("/api", Facebook);
+app.use("/api", Instagram);
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}...`);

@@ -27,6 +27,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@xaviabot/fb-downloader": "^1.0.14",
     "@ybd-project/ytdl-core": "^6.0.8",
+    "ab-downloader": "^1.0.2",
     "bcryptjs": "^3.0.3",
     "body-parser": "^2.2.2",
     "btch-downloader": "^6.0.25",
