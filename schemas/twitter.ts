@@ -1,0 +1,11 @@
+import { z } from 'zod';
+
+export const TwitterSchema = z.object({
+    url: z.string()
+        .url()
+        .refine((val) => val.startsWith("https://x.com"), {
+            message: "URL harus dimulai dengan https://x.com"
+        }),
+    fileType: z.string().min(1, "File type harus diisi").max(50),
+    userId: z.string().min(1, "User ID harus diisi").max(50)
+});
