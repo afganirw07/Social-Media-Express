@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { jwtCreate } from "../services/jwtCreate";
 import generateOTP from "../nodemailer/generateOtp";
 import { sendOTPEmail } from "../services/emailVerify";
+import { fa } from "zod/locales";
 
 
 // create a new user
@@ -214,7 +215,13 @@ export const getUserById = async (req: Request, res: Response) => {
     try {
         const user = await prisma.user.findUnique({
             where: { id: String(id) },
-            include: {
+            select: {
+                id: true,
+                email: true,
+                username: true,
+                isVerified: true,
+                createdAt: true,
+                updatedAt: true,
                 subscription: true,
                 tokenBalance: true,
                 tokenHistory: true,
@@ -248,13 +255,20 @@ export const getUserById = async (req: Request, res: Response) => {
 export const getAllUsers = async (req: Request, res: Response) => {
     try {
         const users = await prisma.user.findMany({
-            include: {
-                subscription: true,
-                tokenBalance: true,
-                tokenHistory: true,
-                downloads: true,
-                payments: true,
-            }
+            where: { isVerified: true },
+            select: {
+                id: true,
+                email: true,
+                username: true,
+                isVerified: true,
+                subscription: {
+                    select: {
+                        type: true,
+                        expiresAt: true
+                    }
+                },
+            },
+
         });
         res.status(200).json({
             status: true,
