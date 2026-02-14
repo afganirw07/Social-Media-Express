@@ -74,10 +74,31 @@ export const createUser = async (req: Request, res: Response) => {
 // resending otp
 export const resendOTP = async (req: Request, res: Response) => {
     try {
+
         const { email } = req.body;
+
+        const checkUser = await prisma.user.findUnique({
+            where: { email }
+        });
+
+        if (!checkUser) {
+            return res.status(404).json({
+                status: false,
+                message: "User not found",
+            });
+        }
+
+        if(checkUser.isVerified){
+            return res.status(400).json({
+                status: false,
+                message: "User already verified",
+            });
+        }
+
         const otp = generateOTP();
         const hashedOTP = await bcrypt.hash(otp, 10);
         const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
 
         await prisma.user.update({
             where: { email },
