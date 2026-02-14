@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 import { jwtCreate } from "../services/jwtCreate";
 import generateOTP from "../nodemailer/generateOtp";
 import { sendOTPEmail } from "../services/emailVerify";
-import { fa } from "zod/locales";
 
 
 // create a new user
