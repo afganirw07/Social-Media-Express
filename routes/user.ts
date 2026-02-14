@@ -1,4 +1,4 @@
-import { createUser, deleteUserById, getAllUsers, getUserById, updateUserById, loginUser, verifyEmail } from "../controllers/User";
+import { createUser, deleteUserById, getAllUsers, getUserById, updateUserById, loginUser, verifyEmail, resendOTP } from "../controllers/User";
 import { Router } from "express";
 import { userSchema, loginSchema } from "../schemas/user";
 import { validateData } from "../middleware/zod";
@@ -9,6 +9,7 @@ const router = Router();
 // User routes
 router.post("/user", validateData(userSchema), createUser);
 router.post("/verify-email", verifyEmail);
+router.post("/resend-otp", resendOTP);
 router.post("/login", validateData(loginSchema), loginUser);
 router.get("/user", getAllUsers);
 router.get("/user/:id", JwtVerify, getUserById);

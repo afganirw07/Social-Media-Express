@@ -70,6 +70,37 @@ export const createUser = async (req: Request, res: Response) => {
     }
 };
 
+// resending otp
+export const resendOTP = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+        const otp = generateOTP();
+        const hashedOTP = await bcrypt.hash(otp, 10);
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+        await prisma.user.update({
+            where: { email },
+            data: {
+                otpCode: hashedOTP,
+                otpExpires: expiresAt,
+            },
+        });
+
+        await sendOTPEmail(email, otp);
+        res.status(200).json({
+            status: true,
+            message: "OTP resent successfully",
+        });
+    } catch (error) {
+        console.error("Error resending OTP:", error);
+        res.status(500).json({
+            status: false,
+            message: "Error resending OTP",
+            error: error,
+        })
+    }
+}
+
 // verify email
 export const verifyEmail = async (req: Request, res: Response) => {
     const { email, otp } = req.body;
