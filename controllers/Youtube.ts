@@ -12,6 +12,14 @@ export const youtubeDownloader = async (req: Request, res: Response) => {
                 where: { userId: String(userId) },
             })
 
+            if (!checkToken?.id) {
+                res.status(401).json({
+                    status: false,
+                    message: "User tidak ditemukan",
+                });
+                return null;
+            }
+
             if (!checkToken || checkToken.balance <= 0) {
                 return res.status(401).json({
                     status: false,
@@ -59,7 +67,7 @@ export const youtubeDownloader = async (req: Request, res: Response) => {
             download: result,
         });
 
-        
+
     } catch (error) {
         console.error("Error downloading YouTube video:", error);
         res.status(500).json({

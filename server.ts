@@ -10,7 +10,7 @@ import Twitter from "./routes/twitter.ts";
 
 // server setup
 const app = express();
-const port = process.env.PORT || 9000;
+const port = process.env.PORT ;
 
 app.use(express.json());
 
