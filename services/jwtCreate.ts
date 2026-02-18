@@ -8,6 +8,6 @@ interface JwtPayload {
 
 export const jwtCreate = (payload: JwtPayload): string => {
     return jwt.sign(payload, process.env.JWT_SECRET as string, {
-        expiresIn: "1h",
+        expiresIn: "1d",
     });
 };
