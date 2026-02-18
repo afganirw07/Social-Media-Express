@@ -5,6 +5,7 @@
     "dev": "tsx watch server.ts"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "jest": "^30.2.0",
     "prisma": "4.16.2",
     "supertest": "^7.2.2",
@@ -19,6 +20,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "bcryptjs": "^3.0.3",
     "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.3",
     "nodemailer": "^8.0.1",
