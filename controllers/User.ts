@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { jwtCreate } from "../services/jwtCreate";
 import generateOTP from "../nodemailer/generateOtp";
 import { sendOTPEmail } from "../services/emailVerify";
+import { fa } from "zod/locales";
 
 
 // create a new user
@@ -69,6 +70,58 @@ export const createUser = async (req: Request, res: Response) => {
         });
     }
 };
+
+// resending otp
+export const resendOTP = async (req: Request, res: Response) => {
+    try {
+
+        const { email } = req.body;
+
+        const checkUser = await prisma.user.findUnique({
+            where: { email }
+        });
+
+        if (!checkUser) {
+            return res.status(404).json({
+                status: false,
+                message: "User not found",
+            });
+        }
+
+        if(checkUser.isVerified){
+            return res.status(400).json({
+                status: false,
+                message: "User already verified",
+            });
+        }
+
+        const otp = generateOTP();
+        const hashedOTP = await bcrypt.hash(otp, 10);
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+
+        await prisma.user.update({
+            where: { email },
+            data: {
+                otpCode: hashedOTP,
+                otpExpires: expiresAt,
+            },
+        });
+
+        await sendOTPEmail(email, otp);
+        res.status(200).json({
+            status: true,
+            message: "OTP resent successfully",
+        });
+    } catch (error) {
+        console.error("Error resending OTP:", error);
+        res.status(500).json({
+            status: false,
+            message: "Error resending OTP",
+            error: error,
+        })
+    }
+}
 
 // verify email
 export const verifyEmail = async (req: Request, res: Response) => {
@@ -183,7 +236,13 @@ export const getUserById = async (req: Request, res: Response) => {
     try {
         const user = await prisma.user.findUnique({
             where: { id: String(id) },
-            include: {
+            select: {
+                id: true,
+                email: true,
+                username: true,
+                isVerified: true,
+                createdAt: true,
+                updatedAt: true,
                 subscription: true,
                 tokenBalance: true,
                 tokenHistory: true,
@@ -217,13 +276,20 @@ export const getUserById = async (req: Request, res: Response) => {
 export const getAllUsers = async (req: Request, res: Response) => {
     try {
         const users = await prisma.user.findMany({
-            include: {
-                subscription: true,
-                tokenBalance: true,
-                tokenHistory: true,
-                downloads: true,
-                payments: true,
-            }
+            where: { isVerified: true },
+            select: {
+                id: true,
+                email: true,
+                username: true,
+                isVerified: true,
+                subscription: {
+                    select: {
+                        type: true,
+                        expiresAt: true
+                    }
+                },
+            },
+
         });
         res.status(200).json({
             status: true,

@@ -7,6 +7,7 @@ A backend API for downloading media from various social media platforms, built w
 - [Authentication](#authentication)
 - [API Endpoints](#api-endpoints)
   - [User Management](#user-management)
+  - [Email Verification](#email-verification)
   - [Social Media Downloaders](#social-media-downloaders)
 - [Input Validation](#input-validation)
 
@@ -42,24 +43,31 @@ Authorization: Bearer <your_jwt_token>
 
 | Endpoint | Method | Description | Auth |
 | :--- | :--- | :--- | :--- |
-| `/user` | `POST` | Register a new user | No |
-| `/login` | `POST` | User login | No |
-| `/user` | `GET` | Get all users | No |
-| `/user/:id` | `GET` | Get user by ID | Yes |
-| `/user/:id` | `PUT` | Update user details | Yes |
-| `/user/:id` | `DELETE` | Delete user | Yes |
+| `/user` | `POST` | Register a new user and send OTP. | No |
+| `/login` | `POST` | Authenticate user and return JWT token. | No |
+| `/user` | `GET` | Get all verified users. | No |
+| `/user/:id` | `GET` | Get detailed user profile by ID. | Yes |
+| `/user/:id` | `PUT` | Update user details (email, username, password). | Yes |
+| `/user/:id` | `DELETE` | Remove user account. | Yes |
+
+### Email Verification
+
+| Endpoint | Method | Description | Input |
+| :--- | :--- | :--- | :--- |
+| `/verify-email` | `POST` | Verify user email using OTP code. | `email`, `otp` |
+| `/resend-otp` | `POST` | Resend verification OTP to user email. | `email` |
 
 ### Social Media Downloaders
 
-All downloader endpoints require **Authentication**.
+All downloader endpoints require **Authentication** and deduct 1 token from the user's balance per successful request.
 
-| Endpoint | Method | Description | Input Fields | Valid URL Prefix |
-| :--- | :--- | :--- | :--- | :--- |
-| `/facebook` | `POST` | Download Facebook Video | `url`, `fileType`, `userId` | `https://www.facebook` |
-| `/instagram` | `POST` | Download Instagram Video | `url`, `fileType`, `userId` | `https://www.instagram` |
-| `/tiktok` | `POST` | Download TikTok Video | `url`, `fileType`, `userId` | `https://vt.tiktok` |
-| `/twitter` | `POST` | Download Twitter Video | `url`, `fileType`, `userId` | `https://x.com` |
-| `/youtube` | `POST` | Download YouTube Video | `url`, `fileType`, `userId` | `https://youtu` |
+| Endpoint | Method | Description | Valid URL Prefix |
+| :--- | :--- | :--- | :--- |
+| `/facebook` | `POST` | Download Facebook Video | `https://www.facebook` |
+| `/instagram` | `POST` | Download Instagram Video | `https://www.instagram` |
+| `/tiktok` | `POST` | Download TikTok Video | `https://vt.tiktok` |
+| `/twitter` | `POST` | Download Twitter Video | `https://x.com` |
+| `/youtube` | `POST` | Download YouTube Video | `https://youtu` |
 
 ---
 
@@ -67,13 +75,21 @@ All downloader endpoints require **Authentication**.
 
 The API uses **Zod** for request body validation.
 
-### User Schema (`/user`)
+### User Registration (`POST /api/user`)
 - `email`: Valid email format.
 - `username`: 3 - 50 characters.
 - `password`: 6 - 100 characters.
 
-### Downloader Schema
-All downloader endpoints (`/facebook`, `/instagram`, etc.) share a similar structure:
+### User Login (`POST /api/login`)
+- `email`: Valid email format.
+- `password`: 6 - 100 characters.
+
+### Downloader Endpoints
+All downloader endpoints share the following input requirements:
+
 - `url`: Must be a valid URL and match the platform's prefix.
-- `fileType`: String (Required, max 50 characters).
+- `filetype`: String (Required, max 50 characters).
 - `userId`: String (Required, max 50 characters).
+
+> [!NOTE]
+> The `userId` in the request body is currently used for tracking balances and history. Ensure it matches the authenticated user ID.
