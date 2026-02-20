@@ -14,6 +14,14 @@ export const facebookDownload = async (req: Request, res: Response) => {
                 where: { userId: String(userId) },
             })
 
+            if (!checkToken?.id) {
+                res.status(401).json({
+                    status: false,
+                    message: "User tidak ditemukan",
+                });
+                return null;
+            }
+            
             if (!checkToken || checkToken.balance <= 0) {
                 return res.status(401).json({
                     status: false,

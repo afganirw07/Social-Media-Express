@@ -13,6 +13,16 @@ export const twitterController = async (req: Request, res: Response) => {
                 where: { userId: String(userId) },
             });
 
+            // console.log("=================================",checkToken);
+
+            if (!checkToken?.id) {
+                res.status(401).json({
+                    status: false,
+                    message: "User tidak ditemukan",
+                });
+                return null;
+            }
+
             if (!checkToken || checkToken.balance <= 0) {
                 res.status(401).json({
                     status: false,

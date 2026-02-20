@@ -5,9 +5,13 @@
     "dev": "tsx watch server.ts"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "@types/express": "^5.0.6",
     "@types/node": "^25.2.3",
     "@types/nodemailer": "^7.0.9",
+=======
+    "@types/cors": "^2.8.19",
+>>>>>>> 9e9e06653180b8c4b9104e18398fa673714e9737
     "jest": "^30.2.0",
     "prisma": "4.16.2",
     "supertest": "^7.2.2",
@@ -22,7 +26,11 @@
     "@types/jsonwebtoken": "^9.0.10",
     "bcryptjs": "^3.0.3",
     "body-parser": "^2.2.2",
+<<<<<<< HEAD
     "express": "^5.2.1",
+=======
+    "cors": "^2.8.6",
+>>>>>>> 9e9e06653180b8c4b9104e18398fa673714e9737
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.3",
     "nodemailer": "^8.0.1",
