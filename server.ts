@@ -7,6 +7,7 @@ import Facebook from "./routes/facebook.ts";
 import Instagram from "./routes/instagram.ts";
 import Twitter from "./routes/twitter.ts";
 import cors from "cors";
+import rateLimiter from "./middleware/rateLimit.ts";
 
 
 // server setup
@@ -14,6 +15,7 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(express.json());
+app.use(rateLimiter);
 
 app.use(cors({
     origin: "http://localhost:3000", 
