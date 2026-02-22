@@ -58,7 +58,7 @@ export const tiktokDownloader = async (req: Request, res: Response) => {
                     userId: String(userId),
                 }
             });
-            return download;
+            return download;    
         })
 
         const media = await tiktokDownload(url);

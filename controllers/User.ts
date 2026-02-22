@@ -245,7 +245,11 @@ export const getUserById = async (req: Request, res: Response) => {
                 subscription: true,
                 tokenBalance: true,
                 tokenHistory: true,
-                downloads: true,
+                downloads: {
+                    orderBy : {
+                        createdAt: 'desc'
+                    }
+                },
                 payments: true,
             }
         });
