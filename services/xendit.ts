@@ -1,5 +1,4 @@
 import { Xendit } from "xendit-node";
-import { prisma } from "../database/prisma";
 
 const xenditClient = new Xendit({
     secretKey: process.env.XENDIT_SECRET_KEY as string,

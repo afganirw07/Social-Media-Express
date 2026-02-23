@@ -22,8 +22,8 @@ export const createPayment = async (req: Request, res: Response) => {
                 amount,
                 email: user.email,
                 description,
-                successRedirectURL,
-                failureRedirectURL,
+                successRedirectURL: "http://localhost:3000/home",
+                failureRedirectURL: "http://localhost:3000/home",
             });
 
             await tx.payment.create({
@@ -96,28 +96,25 @@ export const handleWebhook = async (req: Request, res: Response) => {
             });
 
             if (paymentStatus === "PAID") {
-                // Update Subscription to PREMIUM
                 await tx.subscription.update({
                     where: { userId: payment.userId },
                     data: {
                         type: "PREMIUM",
-                        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+                        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
                     },
                 });
 
-                // Update Token Balance (add 100 bonus tokens)
                 await tx.tokenBalance.update({
                     where: { userId: payment.userId },
                     data: {
-                        balance: { increment: 100 }
+                        balance: { increment: 100000000 }
                     },
                 });
 
-                // Log to Token History
                 await tx.tokenHistory.create({
                     data: {
                         userId: payment.userId,
-                        amount: 100,
+                        amount: 100000000,
                         type: "PURCHASE"
                     }
                 });
@@ -139,3 +136,5 @@ export const handleWebhook = async (req: Request, res: Response) => {
         });
     }
 };
+
+

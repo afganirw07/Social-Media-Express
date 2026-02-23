@@ -6,7 +6,10 @@ import { paymentSchema } from "../schemas/payment";
 
 const router = Router();
 
+// User routes
 router.post("/payment/create", JwtVerify, validateData(paymentSchema), createPayment);
 router.post("/payment/webhook", handleWebhook);
 
 export default router;
+
+
