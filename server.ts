@@ -6,6 +6,7 @@ import Youtube from "./routes/youtube.ts";
 import Facebook from "./routes/facebook.ts";
 import Instagram from "./routes/instagram.ts";
 import Twitter from "./routes/twitter.ts";
+import Payment from "./routes/payment.ts";
 import cors from "cors";
 import rateLimiter from "./middleware/rateLimit.ts";
 
@@ -18,7 +19,7 @@ app.use(express.json());
 app.use(rateLimiter);
 
 app.use(cors({
-    origin: "http://localhost:3000", 
+    origin: "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
@@ -34,6 +35,8 @@ app.use("/api", Youtube);
 app.use("/api", Facebook);
 app.use("/api", Instagram);
 app.use("/api", Twitter);
+app.use("/api", Payment);
+
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}...`);

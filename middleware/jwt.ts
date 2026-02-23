@@ -18,13 +18,14 @@ export const JwtVerify = (
         });
     }
 
-    jwt.verify(token, secret, (err: any) => {
+    jwt.verify(token, secret, (err: any, decoded: any) => {
         if (err) {
             return res.status(401).json({
                 status: false,
                 message: "Unauthorized - invalid token",
             });
         }
+        (req as any).user = decoded;
         next();
     });
 };
