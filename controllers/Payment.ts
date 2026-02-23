@@ -4,7 +4,7 @@ import { prisma } from "../database/prisma";
 
 export const createPayment = async (req: Request, res: Response) => {
     try {
-        const { amount, description, successRedirectURL, failureRedirectURL } = req.body;
+        const { amount, description } = req.body;
         const user = (req as any).user;
 
         if (!user) {
