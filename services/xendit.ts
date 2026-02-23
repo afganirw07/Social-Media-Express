@@ -30,8 +30,8 @@ export const createPaymentInvoice = async ({
                 amount,
                 payerEmail: email,
                 description,
-                successRedirectURL,
-                failureRedirectURL,
+                successRedirectUrl: successRedirectURL,
+                failureRedirectUrl: failureRedirectURL,
                 currency: "IDR",
             }
         });
