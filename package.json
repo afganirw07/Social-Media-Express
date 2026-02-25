@@ -2,7 +2,8 @@
   "name": "social-media-express",
   "private": true,
   "scripts": {
-    "dev": "tsx watch server.ts"
+    "dev": "tsx watch server.ts",
+    "build": "tsc"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
