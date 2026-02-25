@@ -61,7 +61,9 @@ export const handleWebhook = async (req: Request, res: Response) => {
     try {
         const callbackToken = req.headers["x-callback-token"];
 
-        if (process.env.XENDIT_CALLBACK_TOKEN && callbackToken !== process.env.XENDIT_CALLBACK_TOKEN) {
+        const webhookSecret = process.env.XENDIT_WEBHOOK_SECRET;
+
+        if (webhookSecret && callbackToken !== process.env.XENDIT_CALLBACK_TOKEN) {
             return res.status(403).json({
                 status: false,
                 message: "Invalid callback token",
