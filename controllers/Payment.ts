@@ -14,6 +14,22 @@ export const createPayment = async (req: Request, res: Response) => {
             });
         }
 
+        const checkUser = await prisma.user.findUnique({
+            where: { 
+                id: user.id 
+            },
+            include : {
+                subscription : true
+            }
+        })
+
+        if (checkUser?.subscription?.type === "PREMIUM") {
+            return res.status(400).json({
+                status: false,
+                message: "You are already a premium user",
+            })
+        }
+
         const externalId = `inv-${Date.now()}-${user.id}`;
 
         const result = await prisma.$transaction(async (tx) => {

@@ -28,7 +28,7 @@ export const createUser = async (req: Request, res: Response) => {
             });
         }
 
-        const newUser = await prisma.user.create({
+        await prisma.user.create({
             data: {
                 email,
                 username,
@@ -87,7 +87,7 @@ export const resendOTP = async (req: Request, res: Response) => {
             });
         }
 
-        if(checkUser.isVerified){
+        if (checkUser.isVerified) {
             return res.status(400).json({
                 status: false,
                 message: "User already verified",
@@ -246,7 +246,7 @@ export const getUserById = async (req: Request, res: Response) => {
                 tokenBalance: true,
                 tokenHistory: true,
                 downloads: {
-                    orderBy : {
+                    orderBy: {
                         createdAt: 'desc'
                     }
                 },
